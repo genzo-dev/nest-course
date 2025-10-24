@@ -1,0 +1,32 @@
+@baseUrl = http://localhost:3001
+
+# RECADOS
+GET {{baseUrl}}/recados/
+### 
+GET {{baseUrl}}/recados/1
+###
+POST {{baseUrl}}/recados/
+Content-Type: application/json
+
+  {
+    "texto": " ada Recado NOVO",
+    "de": "Joana",
+    "para": "João"
+  }
+
+###
+PATCH {{baseUrl}}/recados/3
+Content-Type: application/json
+
+  {
+    "para": "Joãozinho",
+		"lido": true
+  }
+
+###
+DELETE {{baseUrl}}/recados/5
+
+###
+
+# @name AppControllerGetHello
+GET {{baseUrl}}

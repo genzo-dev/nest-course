@@ -20,7 +20,6 @@ export class AuthTokenInterceptor implements NestInterceptor {
     if (!token || token != '123456') {
       throw new UnauthorizedException('Usuário não logado');
     }
-    console.log('Seu token é:', token);
 
     return next.handle();
   }

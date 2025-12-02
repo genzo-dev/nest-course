@@ -11,8 +11,6 @@ import { catchError, throwError } from 'rxjs';
 @Injectable()
 export class ErrorHandlingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler<any>) {
-    // console.log('ErrorHandlingInterceptor ANTES');
-
     return next.handle().pipe(
       catchError(error => {
         return throwError(() => {

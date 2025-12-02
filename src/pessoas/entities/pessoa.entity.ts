@@ -1,5 +1,6 @@
 import { IsEmail } from 'class-validator';
-import { RecadoEntity } from 'src/recados/entities/recado.entity';
+import { RoutePolicies } from 'src/auth/enum/route-policies.enum';
+import { RecadosEntity } from 'src/recados/entities/recados.entity';
 import {
   Column,
   CreateDateColumn,
@@ -32,11 +33,20 @@ export class Pessoa {
 
   // Uma pessoa pode ter enviado muitos recados (como "de")
   // Esses recados são relacionados ao campo "de" na entidade recado
-  @OneToMany(() => RecadoEntity, recado => recado.de)
-  recadosEnviados: RecadoEntity[];
+  @OneToMany(() => RecadosEntity, recado => recado.de)
+  recadosEnviados: RecadosEntity[];
 
   // Uma pessoa pode ter recebido muitos recados (como "para")
   // Esses recados são relacionados ao campo "para" na entidade recado
-  @OneToMany(() => RecadoEntity, recado => recado.para)
-  recadosRecebidos: RecadoEntity[];
+  @OneToMany(() => RecadosEntity, recado => recado.para)
+  recadosRecebidos: RecadosEntity[];
+
+  @Column({ default: true })
+  active: boolean;
+
+  @Column({ type: 'simple-array', default: [] })
+  routePolicies: RoutePolicies[];
+
+  @Column({ default: '' })
+  picture: string;
 }

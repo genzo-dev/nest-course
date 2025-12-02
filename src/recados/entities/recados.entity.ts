@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class RecadoEntity {
+export class RecadosEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

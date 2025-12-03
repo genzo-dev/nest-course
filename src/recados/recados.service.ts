@@ -13,6 +13,7 @@ import { ConfigService } from '@nestjs/config';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 import { EmailService } from 'src/email/email.service';
 import { RecadosEntity } from './entities/recados.entity';
+import { ResponseRecadoDto } from './dto/response-recado.dto';
 
 // Scope.DEFAULT -> O provider em questão é um singleton
 // Scope.REQUEST -> O provider é instanciado a cada requisição
@@ -33,7 +34,7 @@ export class RecadosService {
     // console.log('process.env', process.env.DATABASE_USERNAME);
   }
 
-  async findAll(paginationDto?: PaginationDto) {
+  async findAll(paginationDto?: PaginationDto): Promise<ResponseRecadoDto[]> {
     const { limit = 10, offset = 0 } = paginationDto ?? {};
 
     const recados = await this.recadoRepository.find({
@@ -57,7 +58,7 @@ export class RecadosService {
     return recados;
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<ResponseRecadoDto> {
     const recado = await this.recadoRepository.findOne({
       where: {
         id,
@@ -87,7 +88,7 @@ export class RecadosService {
   async create(
     createRecadoDto: CreateRecadoDto,
     tokenPayload: TokenPayloadDto,
-  ) {
+  ): Promise<ResponseRecadoDto> {
     const { paraId } = createRecadoDto;
 
     const de = await this.pessoasService.findOne(tokenPayload.sub);
@@ -125,7 +126,7 @@ export class RecadosService {
     id: number,
     updateRecadoDto: UpdateRecadoDto,
     tokenPayload: TokenPayloadDto,
-  ) {
+  ): Promise<ResponseRecadoDto> {
     const recado = await this.findOne(id);
 
     if (recado.de.id !== tokenPayload.sub) {
@@ -145,6 +146,7 @@ export class RecadosService {
       throw new ForbiddenException('Esse recado não é seu');
     }
 
-    return await this.recadoRepository.remove(recado);
+    await this.recadoRepository.delete(recado.id);
+    return recado;
   }
 }

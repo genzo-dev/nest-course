@@ -23,6 +23,14 @@ import { RecadosUtils } from './recados.utils';
 import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
 import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 // import { RoutePolicyGuard } from 'src/auth/guards/role-policy.guard';
 // import { ROUTE_POLICY_KEY } from 'src/auth/auth.constants';
 // import { SetRoutePolicy } from 'src/auth/decorators/set-route-policy.decorator';
@@ -40,6 +48,7 @@ import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
 // @UseInterceptors(AuthTokenInterceptor)
 // @UseGuards(RoutePolicyGuard)
+
 @Controller('recados')
 export class RecadosController {
   constructor(
@@ -51,6 +60,19 @@ export class RecadosController {
   // @HttpCode(HttpStatus.OK)
   @Get()
   // @SetRoutePolicy(RoutePolicies.findAllRecados)
+  @ApiQuery({
+    name: 'offset',
+    required: false,
+    example: 1,
+    description: 'Itens a pular',
+  }) // Parâmetros da query
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    example: 10,
+    description: 'Limite de itens por página',
+  })
+  @ApiResponse({ status: 200, description: 'Recados retornados com sucesso.' }) // Resposta bem-sucedida
   async findAll(
     @Query() paginationDto: PaginationDto,
     @ReqDataParam('method') method,
@@ -60,6 +82,10 @@ export class RecadosController {
     return recados;
   }
 
+  @ApiOperation({ summary: 'Obter um recado específico pelo ID' }) // Descrição da operação
+  @ApiParam({ name: 'id', description: 'ID do recado', example: 1 }) // Parâmetro da rota
+  @ApiResponse({ status: 200, description: 'Recado retornado com sucesso.' }) // Resposta bem-sucedida
+  @ApiResponse({ status: 404, description: 'Recado não encontrado.' }) // Resposta de erro
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.recadosService.findOne(id);
@@ -68,6 +94,7 @@ export class RecadosController {
   // @UseGuards(AuthTokenGuard, RoutePolicyGuard)
   // @SetRoutePolicy(RoutePolicies.createRecado)
   @UseGuards(AuthTokenGuard)
+  @ApiBearerAuth()
   @Post()
   create(
     @Body() createRecadoDto: CreateRecadoDto,
